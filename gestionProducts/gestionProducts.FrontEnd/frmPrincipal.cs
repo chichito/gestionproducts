@@ -1,4 +1,5 @@
-﻿using gestionProducts.FrontEnd.usuario;
+﻿using gestionProducts.FrontEnd.administracion;
+using gestionProducts.FrontEnd.usuario;
 using System;
 using System.Configuration;
 using System.Windows.Forms;
@@ -40,6 +41,20 @@ namespace gestionProducts.FrontEnd
         private void crearUsuariosToolStripMenuItem_Click(object sender, EventArgs e)
         {
             frmUsuario frm = new frmUsuario();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        private void importacionesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmImportaciones frm = new frmImportaciones();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        private void productosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmProductos frm = new frmProductos();
             frm.MdiParent = this;
             frm.Show();
         }

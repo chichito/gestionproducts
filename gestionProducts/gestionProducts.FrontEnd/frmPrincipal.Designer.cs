@@ -84,7 +84,7 @@
             // salirToolStripMenuItem
             // 
             this.salirToolStripMenuItem.Name = "salirToolStripMenuItem";
-            this.salirToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.salirToolStripMenuItem.Size = new System.Drawing.Size(96, 22);
             this.salirToolStripMenuItem.Text = "Salir";
             this.salirToolStripMenuItem.Click += new System.EventHandler(this.salirToolStripMenuItem_Click);
             // 
@@ -119,12 +119,14 @@
             this.productosToolStripMenuItem.Name = "productosToolStripMenuItem";
             this.productosToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.productosToolStripMenuItem.Text = "Productos";
+            this.productosToolStripMenuItem.Click += new System.EventHandler(this.productosToolStripMenuItem_Click);
             // 
             // importacionesToolStripMenuItem
             // 
             this.importacionesToolStripMenuItem.Name = "importacionesToolStripMenuItem";
             this.importacionesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.importacionesToolStripMenuItem.Text = "Importaciones";
+            this.importacionesToolStripMenuItem.Click += new System.EventHandler(this.importacionesToolStripMenuItem_Click);
             // 
             // ingreToolStripMenuItem
             // 
