@@ -1,4 +1,5 @@
 ﻿using gestionProducts.FrontEnd.administracion;
+using gestionProducts.FrontEnd.movimiento;
 using gestionProducts.FrontEnd.usuario;
 using System;
 using System.Configuration;
@@ -55,6 +56,20 @@ namespace gestionProducts.FrontEnd
         private void productosToolStripMenuItem_Click(object sender, EventArgs e)
         {
             frmProductos frm = new frmProductos();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        private void modelosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmModelo frm = new frmModelo();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        private void ingreToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmIngresosProductos frm = new frmIngresosProductos();
             frm.MdiParent = this;
             frm.Show();
         }
