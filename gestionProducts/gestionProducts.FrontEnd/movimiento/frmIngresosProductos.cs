@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Windows.Forms;
 
 namespace gestionProducts.FrontEnd.movimiento
@@ -164,7 +165,7 @@ namespace gestionProducts.FrontEnd.movimiento
             string sError = "";
             lblImportacion.Text = lstImportaciones.SelectedValue.ToString();
             lblImpoNombre.Text = lstImportaciones.GetItemText(lstImportaciones.SelectedItem);
-            string sSQL = $"SELECT * FROM ingresosproductoscabecera WHERE codigo={lstImportaciones.SelectedValue}";
+            string sSQL = $"SELECT * FROM ingresosproductoscabecera WHERE idimportacion={lstImportaciones.SelectedValue}";
             DataSet ds = clsVariables.ObjBD.cargarSQL(sSQL, null, out sError);
             if (sError != "")
             {
@@ -175,9 +176,13 @@ namespace gestionProducts.FrontEnd.movimiento
             {
                 lblNew.Text = ds.Tables[0].Rows[0]["codigo"].ToString();
                 lblFecha.Text = ds.Tables[0].Rows[0]["fecha"].ToString();
-                lblUsuario.Text = ds.Tables[0].Rows[0]["usuariocreo"].ToString();
+                lblUsuario.Text = ds.Tables[0].Rows[0]["idusuario"].ToString();
                 txtObservacionCabecera.Text = ds.Tables[0].Rows[0]["observacion"].ToString();
-                sSQL = $"SELECT * FROM ingresosproductosdetalle WHERE codigocabecera={lblNew.Text}";
+                sSQL = $"SELECT dt.codigo,idproducto,p.nombre producto,idmodelo,m.nombre modelo,dt.observacion,dt.disponible,'R' estado " +
+                    $" FROM ingresosproductosdetalle dt" +
+                    $" inner join producto p on dt.idproducto=p.codigo" +
+                    $" inner join modelo m on dt.idmodelo=m.codigo" +
+                    $" WHERE codigocabecera={lblNew.Text}";
                 ds = clsVariables.ObjBD.cargarSQL(sSQL, null, out sError);
                 if (sError != "")
                 {
@@ -197,6 +202,7 @@ namespace gestionProducts.FrontEnd.movimiento
                 txtObservacionCabecera.Text = "";
                 dtDetalle = CrearDetalleProductos(null);
             }
+            grDetalle.DataSource = dtDetalle;
         }
 
         private DataTable CrearDetalleProductos(DataTable dtT)
@@ -210,17 +216,48 @@ namespace gestionProducts.FrontEnd.movimiento
             dt.Columns.Add("Modelo", typeof(string));
             dt.Columns.Add("observacion", typeof(string));
             dt.Columns.Add("disponible", typeof(bool));
-            dt.Columns.Add("estado", typeof(String));
+            dt.Columns.Add("estado", typeof(string));
             if (dtT != null)
-            {
-            }
+                foreach (DataRow row in dtT.Rows)
+                    dt.Rows.Add(row.ItemArray);
             return dt;
         }
 
         private void cmdGrabar_Click(object sender, EventArgs e)
         {
-            string sSqlCa = $"INSERT INTO ingresosproductoscabecera (idimportacion, idusuario, observacion) " +
+            string sError = "";
+            string sSQL = $"INSERT INTO ingresosproductoscabecera (idimportacion, idusuario, observacion) " +
                             $"VALUES ({lblImportacion.Text},{clsVariables.ObjU.SIdUsuario},'{txtObservacionCabecera.Text}')";
+            if (clsVariables.ObjBD.Ejecutar(sSQL, null, out sError))
+            {
+                sSQL = $"SELECT MAX(codigo) FROM ingresosproductoscabecera";
+                DataSet ds = clsVariables.ObjBD.cargarSQL(sSQL, null, out sError);
+                if (sError != "")
+                {
+                    MessageBox.Show(sError, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    lblNew.Text = ds.Tables[0].Rows[0][0].ToString();
+                    foreach (DataRow row in dtDetalle.Rows)
+                    {
+                        sSQL = $"INSERT INTO ingresosproductosdetalle (codigocabecera, idproducto, idmodelo, observacion, disponible) " +
+                               $"VALUES ({lblNew.Text}, {row["idproducto"]}, {row["idmodelo"]}, '{row["observacion"]}', {Convert.ToInt32(row["disponible"])})";
+                        if (!clsVariables.ObjBD.grabarSQL(sSQL, out sError))
+                        {
+                            MessageBox.Show(sError, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                    }
+                    MessageBox.Show("Datos grabados correctamente.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    cargarDatos();
+                }
+                else
+                {
+                    MessageBox.Show("No se pudo obtener el código de la cabecera.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
     }
 }

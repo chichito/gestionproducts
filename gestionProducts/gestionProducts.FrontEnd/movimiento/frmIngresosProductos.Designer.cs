@@ -46,7 +46,6 @@
             this.disponible = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.estado = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.userGrilla = new gestionProducts.FrontEnd.usercontrol.userControlGrilla();
             this.cmdGrabar = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.cmdModelo = new System.Windows.Forms.Button();
@@ -78,6 +77,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.pnlA = new System.Windows.Forms.Panel();
             this.pnlD = new System.Windows.Forms.Panel();
+            this.userGrilla = new gestionProducts.FrontEnd.usercontrol.userControlGrilla();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -270,23 +270,6 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(629, 345);
             this.panel3.TabIndex = 1;
-            // 
-            // userGrilla
-            // 
-            this.userGrilla.Font = new System.Drawing.Font("Garamond", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.userGrilla.FormName = null;
-            this.userGrilla.Location = new System.Drawing.Point(121, 47);
-            this.userGrilla.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.userGrilla.Name = "userGrilla";
-            this.userGrilla.NombreCampo = null;
-            this.userGrilla.NombreTabla = null;
-            this.userGrilla.Size = new System.Drawing.Size(375, 201);
-            this.userGrilla.TabIndex = 26;
-            this.userGrilla.ValorBuscar = null;
-            this.userGrilla.ValorCampo = null;
-            this.userGrilla.ValorSeleccionado = null;
-            this.userGrilla.Visible = false;
-            this.userGrilla.VisibleChanged += new System.EventHandler(this.userGrilla_VisibleChanged);
             // 
             // cmdGrabar
             // 
@@ -589,6 +572,23 @@
             this.pnlD.Name = "pnlD";
             this.pnlD.Size = new System.Drawing.Size(190, 74);
             this.pnlD.TabIndex = 28;
+            // 
+            // userGrilla
+            // 
+            this.userGrilla.Font = new System.Drawing.Font("Garamond", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.userGrilla.FormName = null;
+            this.userGrilla.Location = new System.Drawing.Point(189, 47);
+            this.userGrilla.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.userGrilla.Name = "userGrilla";
+            this.userGrilla.NombreCampo = null;
+            this.userGrilla.NombreTabla = null;
+            this.userGrilla.Size = new System.Drawing.Size(375, 201);
+            this.userGrilla.TabIndex = 26;
+            this.userGrilla.ValorBuscar = null;
+            this.userGrilla.ValorCampo = null;
+            this.userGrilla.ValorSeleccionado = null;
+            this.userGrilla.Visible = false;
+            this.userGrilla.VisibleChanged += new System.EventHandler(this.userGrilla_VisibleChanged);
             // 
             // frmIngresosProductos
             // 
