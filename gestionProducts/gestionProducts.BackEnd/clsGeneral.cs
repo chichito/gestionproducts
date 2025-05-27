@@ -29,58 +29,40 @@ namespace gestionProducts.BackEnd
             comando.CommandText = sSQL;
             return GrabarActualizarEliminar(comando, out sError);
         }
+
         public DataSet cargarSQL(string sSQL, Dictionary<string, object> parametros, out string sError)
         {
             try
             {
                 MySqlCommand comando = new MySqlCommand(sSQL, cn);
                 if (parametros != null)
-                {
                     foreach (var param in parametros)
-                    {
                         comando.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
-                    }
-                }
-                cn.Open();
-                DataSet ds = new DataSet();
-                MySqlDataAdapter da = new MySqlDataAdapter(comando);
-                da.Fill(ds);
-                cn.Close();
-                sError = "";
-                return ds;
+                return DevolverDataSet(comando, out sError);
             }
             catch (Exception ex)
             {
                 sError = ex.Message;
-                cn.Close();
                 return null;
             }
         }
-        public bool Ejecutar(string sql, Dictionary<string, object> parametros)
+
+        public bool Ejecutar(string sql, Dictionary<string, object> parametros, out string sError)
         {
             try
             {
-                using (var cmd = new MySqlCommand(sql, cn))
-                {
-                    if (parametros != null)
-                    {
-                        foreach (var param in parametros)
-                        {
-                            cmd.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
-                        }
-                    }
-                    cn.Open();
-                    int filasAfectadas = cmd.ExecuteNonQuery();
-                    cn.Close();
-                    return filasAfectadas > 0;
-                }
+                MySqlCommand comando = new MySqlCommand(sql, cn);
+                if (parametros != null)
+                    foreach (var param in parametros)
+                        comando.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                return GrabarActualizarEliminar(comando, out sError);
             }
             catch (Exception ex)
             {
                 // Aquí puedes registrar el error si lo deseas
+                sError = ex.Message;
                 return false;
             }
         }
-
     }
 }

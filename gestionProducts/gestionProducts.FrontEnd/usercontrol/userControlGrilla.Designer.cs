@@ -30,10 +30,10 @@
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.txtBuscar = new System.Windows.Forms.TextBox();
-            this.cmdBuscar = new System.Windows.Forms.Button();
             this.cmdCall = new System.Windows.Forms.Button();
+            this.txtBuscar = new System.Windows.Forms.TextBox();
             this.grdDatos = new System.Windows.Forms.DataGridView();
+            this.cmdBuscar = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.grdDatos)).BeginInit();
@@ -62,8 +62,8 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel2.ColumnCount = 3;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 58F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 58F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 38F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 38F));
             this.tableLayoutPanel2.Controls.Add(this.cmdCall, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.txtBuscar, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.cmdBuscar, 1, 0);
@@ -75,36 +75,25 @@
             this.tableLayoutPanel2.Size = new System.Drawing.Size(497, 32);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
+            // cmdCall
+            // 
+            this.cmdCall.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdCall.Image = global::gestionProducts.FrontEnd.Properties.Resources.Crear_16x16;
+            this.cmdCall.Location = new System.Drawing.Point(462, 3);
+            this.cmdCall.Name = "cmdCall";
+            this.cmdCall.Size = new System.Drawing.Size(32, 26);
+            this.cmdCall.TabIndex = 2;
+            this.cmdCall.UseVisualStyleBackColor = true;
+            this.cmdCall.Click += new System.EventHandler(this.cmdCall_Click);
+            // 
             // txtBuscar
             // 
             this.txtBuscar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBuscar.Location = new System.Drawing.Point(3, 7);
             this.txtBuscar.Name = "txtBuscar";
-            this.txtBuscar.Size = new System.Drawing.Size(375, 22);
+            this.txtBuscar.Size = new System.Drawing.Size(415, 22);
             this.txtBuscar.TabIndex = 0;
-            // 
-            // cmdBuscar
-            // 
-            this.cmdBuscar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdBuscar.Location = new System.Drawing.Point(384, 3);
-            this.cmdBuscar.Name = "cmdBuscar";
-            this.cmdBuscar.Size = new System.Drawing.Size(52, 26);
-            this.cmdBuscar.TabIndex = 1;
-            this.cmdBuscar.Text = "b";
-            this.cmdBuscar.UseVisualStyleBackColor = true;
-            this.cmdBuscar.Click += new System.EventHandler(this.cmdBuscar_Click);
-            // 
-            // cmdCall
-            // 
-            this.cmdCall.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdCall.Location = new System.Drawing.Point(442, 3);
-            this.cmdCall.Name = "cmdCall";
-            this.cmdCall.Size = new System.Drawing.Size(52, 26);
-            this.cmdCall.TabIndex = 2;
-            this.cmdCall.Text = "l";
-            this.cmdCall.UseVisualStyleBackColor = true;
-            this.cmdCall.Click += new System.EventHandler(this.cmdCall_Click);
             // 
             // grdDatos
             // 
@@ -119,6 +108,17 @@
             this.grdDatos.Size = new System.Drawing.Size(499, 215);
             this.grdDatos.TabIndex = 1;
             this.grdDatos.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.grdDatos_CellDoubleClick);
+            // 
+            // cmdBuscar
+            // 
+            this.cmdBuscar.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdBuscar.Image = global::gestionProducts.FrontEnd.Properties.Resources.Find16x16;
+            this.cmdBuscar.Location = new System.Drawing.Point(424, 3);
+            this.cmdBuscar.Name = "cmdBuscar";
+            this.cmdBuscar.Size = new System.Drawing.Size(32, 26);
+            this.cmdBuscar.TabIndex = 1;
+            this.cmdBuscar.UseVisualStyleBackColor = true;
+            this.cmdBuscar.Click += new System.EventHandler(this.cmdBuscar_Click);
             // 
             // userControlGrilla
             // 

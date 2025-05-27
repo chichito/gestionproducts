@@ -23,7 +23,7 @@ namespace gestionProducts.FrontEnd
         private void cmdAceptar_Click(object sender, EventArgs e)
         {
             string sSQL = $"select * from user u where username='{txtUser.Text}' and password='{txtPassword.Text}' and habilitado=1";
-            DataSet dt = (new clsGeneral(clsVariables.SSqlMysql)).cargarSQL(sSQL, out sError);
+            DataSet dt = clsVariables.ObjBD.cargarSQL(sSQL, null, out sError);
             if (sError.Trim().Length > 0)
             {
                 MessageBox.Show("Error de Autentificacion del SQL Server");

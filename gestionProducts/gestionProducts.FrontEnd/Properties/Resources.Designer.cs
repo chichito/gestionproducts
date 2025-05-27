@@ -63,9 +63,49 @@ namespace gestionProducts.FrontEnd.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap button_agregar {
+        internal static System.Drawing.Bitmap _new {
             get {
-                object obj = ResourceManager.GetObject("button-agregar", resourceCulture);
+                object obj = ResourceManager.GetObject("new", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap agregar {
+            get {
+                object obj = ResourceManager.GetObject("agregar", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Crear_16x16 {
+            get {
+                object obj = ResourceManager.GetObject("Crear 16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Find16x16 {
+            get {
+                object obj = ResourceManager.GetObject("Find16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Save_Impor {
+            get {
+                object obj = ResourceManager.GetObject("Save Impor", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

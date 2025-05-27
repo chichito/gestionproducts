@@ -12,13 +12,15 @@ namespace gestionProducts.FrontEnd.administracion
 {
     public partial class frmModelo : Form
     {
+        private string sError = "";
+
         public frmModelo()
         {
             InitializeComponent();
             cargarModelo();
         }
 
-        void cargarModelo()
+        private void cargarModelo()
         {
             string sSql = "SELECT codigo, nombre FROM modelo";
             string sError = "";
@@ -62,14 +64,14 @@ namespace gestionProducts.FrontEnd.administracion
                         { "@id", lblNew.Text }
                     };
             }
-            if (clsVariables.ObjBD.Ejecutar(sSql, parametros))
+            if (clsVariables.ObjBD.Ejecutar(sSql, parametros, out sError))
             {
                 MessageBox.Show("Modelo guardado correctamente", "Modelo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 cargarModelo();
             }
             else
             {
-                MessageBox.Show("Error al guardar el modelo", "Modelo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error al guardar el modelo " + sError, "Modelo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Diagnostics.Eventing.Reader;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace gestionProducts.FrontEnd.movimiento
 {
     public partial class frmIngresosProductos : Form
     {
-        DataTable dtDetalle = null;
+        private DataTable dtDetalle = null;
+
         public frmIngresosProductos()
         {
             InitializeComponent();
@@ -21,7 +16,7 @@ namespace gestionProducts.FrontEnd.movimiento
             cmdNuevo_Click(null, null);
         }
 
-        void cargarDatos()
+        private void cargarDatos()
         {
             string sError = "";
             string sSQL = "SELECT codigo,CONCAT(nombre,' [',lote,'] ->[',DATE_FORMAT(fecha, '%d/%m/%Y'),']') nombre FROM importacion order by fecha desc";
@@ -34,6 +29,7 @@ namespace gestionProducts.FrontEnd.movimiento
             lstImportaciones.DataSource = ds.Tables[0];
             lstImportaciones.DisplayMember = "nombre";
             lstImportaciones.ValueMember = "codigo";
+            lstImportaciones_Click(null, null);
         }
 
         private void cmdProd_Click(object sender, EventArgs e)
@@ -48,17 +44,20 @@ namespace gestionProducts.FrontEnd.movimiento
                 userGrilla.Visible = true;
                 return;
             }
-            else {
+            else
+            {
                 string sql = $"SELECT * FROM producto WHERE codigo={txtIDProd.Text.Trim()}";
                 DataTable dataTable = DataTable(sql);
-                if (dataTable.Rows.Count == 0)
+                if (dataTable.Rows.Count > 0)
                     lblProducto.Text = dataTable.Rows[0]["nombre"].ToString();
-                else { 
-                    txtIDProd.Text = "";    
-                    lblProducto.Text = "";  
+                else
+                {
+                    txtIDProd.Text = "";
+                    lblProducto.Text = "";
                 }
             }
         }
+
         private void cmdModelo_Click(object sender, EventArgs e)
         {
             if (txtIDMod.Text == "")
@@ -75,12 +74,12 @@ namespace gestionProducts.FrontEnd.movimiento
             {
                 string sql = $"SELECT * FROM modelo WHERE codigo={txtIDMod.Text.Trim()}";
                 DataTable dataTable = DataTable(sql);
-                if (dataTable.Rows.Count == 0)
-                    lblProducto.Text = dataTable.Rows[0]["nombre"].ToString();
+                if (dataTable.Rows.Count > 0)
+                    lblModelo.Text = dataTable.Rows[0]["nombre"].ToString();
                 else
                 {
-                    txtIDProd.Text = "";
-                    lblProducto.Text = "";
+                    txtIDMod.Text = "";
+                    lblModelo.Text = "";
                 }
             }
         }
@@ -103,6 +102,7 @@ namespace gestionProducts.FrontEnd.movimiento
                             lblProducto.Text = "";
                         }
                         break;
+
                     case "modelo":
                         txtIDMod.Text = userGrilla.ValorSeleccionado;
                         string sqlModelo = $"SELECT * FROM modelo WHERE codigo={userGrilla.ValorSeleccionado}";
@@ -124,7 +124,7 @@ namespace gestionProducts.FrontEnd.movimiento
             }
         }
 
-        DataTable DataTable(string sSQL)
+        private DataTable DataTable(string sSQL)
         {
             string sError = "";
             DataSet ds = clsVariables.ObjBD.cargarSQL(sSQL, null, out sError);
@@ -138,30 +138,32 @@ namespace gestionProducts.FrontEnd.movimiento
 
         private void cmdNuevo_Click(object sender, EventArgs e)
         {
-            txtIDMod.Text = ""; 
+            txtIDMod.Text = "";
             lblProducto.Text = "";
-            txtIDMod.Text = ""; 
+            txtIDMod.Text = "";
             lblModelo.Text = "";
         }
 
         private void cmdAgregar_Click(object sender, EventArgs e)
         {
-            DataRow row= dtDetalle.NewRow();
+            DataRow row = dtDetalle.NewRow();
             row["codigo"] = dtDetalle.Rows.Count + 1; // Assuming auto-increment
             row["idproducto"] = txtIDProd.Text.Trim();
             row["Producto"] = lblProducto.Text.Trim();
             row["idmodelo"] = txtIDMod.Text.Trim();
             row["Modelo"] = lblModelo.Text.Trim();
-            row["observacion"] = txtObservacion.Text.Trim();
+            row["observacion"] = txtObservacionDetalle.Text.Trim();
             row["disponible"] = true; // Default value, can be changed later
-            row["estado"] = 0;
+            row["estado"] = "N";
             dtDetalle.Rows.Add(row);
-            grDetalle.DataSource= dtDetalle;
+            grDetalle.DataSource = dtDetalle;
         }
 
         private void lstImportaciones_Click(object sender, EventArgs e)
         {
             string sError = "";
+            lblImportacion.Text = lstImportaciones.SelectedValue.ToString();
+            lblImpoNombre.Text = lstImportaciones.GetItemText(lstImportaciones.SelectedItem);
             string sSQL = $"SELECT * FROM ingresosproductoscabecera WHERE codigo={lstImportaciones.SelectedValue}";
             DataSet ds = clsVariables.ObjBD.cargarSQL(sSQL, null, out sError);
             if (sError != "")
@@ -171,10 +173,10 @@ namespace gestionProducts.FrontEnd.movimiento
             }
             if (ds.Tables[0].Rows.Count > 0)
             {
-                lblNew.Text = ds.Tables[0].Rows[0]["codigo"].ToString();    
+                lblNew.Text = ds.Tables[0].Rows[0]["codigo"].ToString();
                 lblFecha.Text = ds.Tables[0].Rows[0]["fecha"].ToString();
                 lblUsuario.Text = ds.Tables[0].Rows[0]["usuariocreo"].ToString();
-                txtObservacion.Text = ds.Tables[0].Rows[0]["observacion"].ToString();
+                txtObservacionCabecera.Text = ds.Tables[0].Rows[0]["observacion"].ToString();
                 sSQL = $"SELECT * FROM ingresosproductosdetalle WHERE codigocabecera={lblNew.Text}";
                 ds = clsVariables.ObjBD.cargarSQL(sSQL, null, out sError);
                 if (sError != "")
@@ -182,20 +184,22 @@ namespace gestionProducts.FrontEnd.movimiento
                     MessageBox.Show(sError, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                else {
+                else
+                {
                     dtDetalle = CrearDetalleProductos(ds.Tables[0]);
                 }
             }
-            else {
+            else
+            {
                 lblNew.Text = "NEW";
                 lblFecha.Text = DateTime.Now.ToString("dd/MM/yyyy");
                 lblUsuario.Text = clsVariables.ObjU.SNombreApellido;
-                txtObservacion.Text = "";
+                txtObservacionCabecera.Text = "";
                 dtDetalle = CrearDetalleProductos(null);
             }
-
         }
-        DataTable CrearDetalleProductos(DataTable dtT)
+
+        private DataTable CrearDetalleProductos(DataTable dtT)
         {
             DataTable dt = new DataTable();
             dt.TableName = "detalleproductos";
@@ -206,12 +210,17 @@ namespace gestionProducts.FrontEnd.movimiento
             dt.Columns.Add("Modelo", typeof(string));
             dt.Columns.Add("observacion", typeof(string));
             dt.Columns.Add("disponible", typeof(bool));
-            dt.Columns.Add("estado", typeof(int));
-            if (dtT!=null) { 
-            
+            dt.Columns.Add("estado", typeof(String));
+            if (dtT != null)
+            {
             }
             return dt;
         }
 
+        private void cmdGrabar_Click(object sender, EventArgs e)
+        {
+            string sSqlCa = $"INSERT INTO ingresosproductoscabecera (idimportacion, idusuario, observacion) " +
+                            $"VALUES ({lblImportacion.Text},{clsVariables.ObjU.SIdUsuario},'{txtObservacionCabecera.Text}')";
+        }
     }
 }

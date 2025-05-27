@@ -35,7 +35,7 @@ namespace gestionProducts.BackEnd
             {
                 da.Dispose();
                 cn.Close();
-                cn.Dispose();
+                //cn.Dispose();
             }
 
             return ds;
@@ -47,8 +47,9 @@ namespace gestionProducts.BackEnd
             try
             {
                 cn.Open();
-                comando.ExecuteNonQuery();
-                ban = true;
+                int iFilasAfectadas = comando.ExecuteNonQuery();
+                ban = iFilasAfectadas > 0;
+
                 sError = "";
             }
             catch (Exception ex)
