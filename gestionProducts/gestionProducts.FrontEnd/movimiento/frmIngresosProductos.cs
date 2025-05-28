@@ -13,7 +13,6 @@ namespace gestionProducts.FrontEnd.movimiento
         {
             InitializeComponent();
             cargarDatos();
-            cmdNuevo_Click(null, null);
         }
 
         private void cargarDatos()
@@ -238,11 +237,16 @@ namespace gestionProducts.FrontEnd.movimiento
                 dtDetalle = CrearDetalleProductos(null);
             }
             grDetalle.DataSource = dtDetalle;
-            cmdNuevo_Click(null, null);
-            pnlGrdProd.Enabled = true;
-            pnlD.BackColor = System.Drawing.Color.LightGreen;
-            lblMensaje.Text = "Este producto está disponible.";
-            cmdGrabar.Visible = true;
+
+            grDetalle_CellDoubleClick(grDetalle, new DataGridViewCellEventArgs(0, 0));
+            if (grDetalle.Rows.Count == 0)
+            {
+                cmdNuevo_Click(null, null);
+                pnlGrdProd.Enabled = true;
+                pnlD.BackColor = System.Drawing.Color.LightGreen;
+                lblMensaje.Text = "Este producto está disponible.";
+                cmdGrabar.Visible = true;
+            }
         }
 
         private DataTable CrearDetalleProductos(DataTable dtT)
