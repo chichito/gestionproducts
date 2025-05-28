@@ -239,6 +239,7 @@ namespace gestionProducts.FrontEnd.movimiento
             grDetalle.DataSource = dtDetalle;
 
             grDetalle_CellDoubleClick(grDetalle, new DataGridViewCellEventArgs(0, 0));
+
             if (grDetalle.Rows.Count == 0)
             {
                 cmdNuevo_Click(null, null);
