@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace gestionProducts.FrontEnd.movimiento
@@ -43,6 +42,7 @@ namespace gestionProducts.FrontEnd.movimiento
                 userGrilla.ValorBuscar = "nombre";
                 userGrilla.FormName = "gestionProducts.FrontEnd.administracion.frmProductos";
                 userGrilla.Visible = true;
+                userGrilla.BringToFront();
                 return;
             }
             else
@@ -139,25 +139,58 @@ namespace gestionProducts.FrontEnd.movimiento
 
         private void cmdNuevo_Click(object sender, EventArgs e)
         {
-            txtIDMod.Text = "";
+            lblIDDet.Text = "NEW";
+            txtIDProd.Text = "";
             lblProducto.Text = "";
             txtIDMod.Text = "";
             lblModelo.Text = "";
+            pnlA.Enabled = true;
         }
 
         private void cmdAgregar_Click(object sender, EventArgs e)
         {
-            DataRow row = dtDetalle.NewRow();
-            row["codigo"] = dtDetalle.Rows.Count + 1; // Assuming auto-increment
-            row["idproducto"] = txtIDProd.Text.Trim();
-            row["Producto"] = lblProducto.Text.Trim();
-            row["idmodelo"] = txtIDMod.Text.Trim();
-            row["Modelo"] = lblModelo.Text.Trim();
-            row["observacion"] = txtObservacionDetalle.Text.Trim();
-            row["disponible"] = true; // Default value, can be changed later
-            row["estado"] = "N";
-            dtDetalle.Rows.Add(row);
-            grDetalle.DataSource = dtDetalle;
+            if (txtIDProd.Text.Trim() == "")
+            {
+                MessageBox.Show("Debe seleccionar un producto.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if (txtIDMod.Text.Trim() == "")
+            {
+                MessageBox.Show("Debe seleccionar un modelo.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if (dtDetalle.AsEnumerable().Any(r => r.Field<int>("idproducto") == int.Parse(txtIDProd.Text) && r.Field<int>("idmodelo") == int.Parse(txtIDMod.Text)))
+            {
+                MessageBox.Show("This product and model combination already exists.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (lblIDDet.Text == "NEW")
+            {
+                DataRow row = dtDetalle.NewRow();
+                row["codigo"] = dtDetalle.Rows.Count + 1; // Assuming auto-increment
+                row["idproducto"] = txtIDProd.Text.Trim();
+                row["Producto"] = lblProducto.Text.Trim();
+                row["idmodelo"] = txtIDMod.Text.Trim();
+                row["Modelo"] = lblModelo.Text.Trim();
+                row["Serial"] = txtSerial.Text.Trim();
+                row["observacion"] = txtObservacionDetalle.Text.Trim();
+                row["disponible"] = true; // Default value, can be changed later
+                row["estado"] = "N";
+                dtDetalle.Rows.Add(row);
+                grDetalle.DataSource = dtDetalle;
+            }
+            else
+            {
+                // Update existing row
+                DataRow row = dtDetalle.Rows.Find(new object[] { int.Parse(txtIDProd.Text), int.Parse(txtIDMod.Text) });
+                if (row != null)
+                {
+                    row["serial"] = txtSerial.Text.Trim();
+                    row["observacion"] = txtObservacionDetalle.Text.Trim();
+                    row["disponible"] = true; // Default value, can be changed later
+                    row["estado"] = "A"; // New state
+                }
+            }
         }
 
         private void lstImportaciones_Click(object sender, EventArgs e)
@@ -178,7 +211,7 @@ namespace gestionProducts.FrontEnd.movimiento
                 lblFecha.Text = ds.Tables[0].Rows[0]["fecha"].ToString();
                 lblUsuario.Text = ds.Tables[0].Rows[0]["idusuario"].ToString();
                 txtObservacionCabecera.Text = ds.Tables[0].Rows[0]["observacion"].ToString();
-                sSQL = $"SELECT dt.codigo,idproducto,p.nombre producto,idmodelo,m.nombre modelo,dt.observacion,dt.disponible,'R' estado " +
+                sSQL = $"SELECT dt.codigo,idproducto,p.nombre producto,idmodelo,m.nombre modelo,dt.serial,dt.observacion,dt.disponible,'R' estado " +
                     $" FROM ingresosproductosdetalle dt" +
                     $" inner join producto p on dt.idproducto=p.codigo" +
                     $" inner join modelo m on dt.idmodelo=m.codigo" +
@@ -214,9 +247,11 @@ namespace gestionProducts.FrontEnd.movimiento
             dt.Columns.Add("Producto", typeof(string));
             dt.Columns.Add("idmodelo", typeof(int));
             dt.Columns.Add("Modelo", typeof(string));
+            dt.Columns.Add("Serial", typeof(string));
             dt.Columns.Add("observacion", typeof(string));
             dt.Columns.Add("disponible", typeof(bool));
             dt.Columns.Add("estado", typeof(string));
+            dt.PrimaryKey = new DataColumn[] { dt.Columns["idproducto"], dt.Columns["idmodelo"] };
             if (dtT != null)
                 foreach (DataRow row in dtT.Rows)
                     dt.Rows.Add(row.ItemArray);
@@ -242,8 +277,13 @@ namespace gestionProducts.FrontEnd.movimiento
                     lblNew.Text = ds.Tables[0].Rows[0][0].ToString();
                     foreach (DataRow row in dtDetalle.Rows)
                     {
-                        sSQL = $"INSERT INTO ingresosproductosdetalle (codigocabecera, idproducto, idmodelo, observacion, disponible) " +
-                               $"VALUES ({lblNew.Text}, {row["idproducto"]}, {row["idmodelo"]}, '{row["observacion"]}', {Convert.ToInt32(row["disponible"])})";
+                        if (row["estado"] == null || row["estado"].ToString() == "N")
+                            sSQL = $"INSERT INTO ingresosproductosdetalle (codigocabecera, idproducto, idmodelo, serial, observacion, disponible) " +
+                                   $"VALUES ({lblNew.Text}, {row["idproducto"]}, {row["idmodelo"]}, '{row["serial"]}', '{row["observacion"]}', {Convert.ToInt32(row["disponible"])})";
+                        if (row["estado"] == null || row["estado"].ToString() == "A")
+                            sSQL = " UPDATE ingresosproductosdetalle " +
+                                   $"SET serial = '{row["serial"]}', observacion = '{row["observacion"]}' " +
+                                   $"WHERE codigocabecera = {lblNew.Text} AND idproducto = {row["idproducto"]} AND idmodelo = {row["idmodelo"]}";
                         if (!clsVariables.ObjBD.grabarSQL(sSQL, out sError))
                         {
                             MessageBox.Show(sError, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -257,6 +297,22 @@ namespace gestionProducts.FrontEnd.movimiento
                 {
                     MessageBox.Show("No se pudo obtener el código de la cabecera.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+            }
+        }
+
+        private void grDetalle_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            pnlA.Enabled = false;
+            if (e.RowIndex >= 0 && e.RowIndex < grDetalle.Rows.Count)
+            {
+                DataGridViewRow row = grDetalle.Rows[e.RowIndex];
+                lblIDDet.Text = row.Cells["codigo"].Value.ToString();
+                txtIDProd.Text = row.Cells["idproducto"].Value.ToString();
+                lblProducto.Text = row.Cells["Producto"].Value.ToString();
+                txtIDMod.Text = row.Cells["idmodelo"].Value.ToString();
+                lblModelo.Text = row.Cells["Modelo"].Value.ToString();
+                txtSerial.Text = row.Cells["Serial"].Value.ToString();
+                txtObservacionDetalle.Text = row.Cells["observacion"].Value.ToString();
             }
         }
     }

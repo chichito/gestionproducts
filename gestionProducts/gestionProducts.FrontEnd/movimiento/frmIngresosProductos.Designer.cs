@@ -37,14 +37,6 @@
             this.lstImportaciones = new System.Windows.Forms.ListBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.grDetalle = new System.Windows.Forms.DataGridView();
-            this.codigo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.idproducto = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Producto = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.idmodelo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Modelo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.observacion = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.disponible = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.estado = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel3 = new System.Windows.Forms.Panel();
             this.cmdGrabar = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -77,7 +69,17 @@
             this.label1 = new System.Windows.Forms.Label();
             this.pnlA = new System.Windows.Forms.Panel();
             this.pnlD = new System.Windows.Forms.Panel();
+            this.lblIDDet = new System.Windows.Forms.Label();
             this.userGrilla = new gestionProducts.FrontEnd.usercontrol.userControlGrilla();
+            this.codigo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.idproducto = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Producto = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.idmodelo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Modelo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Serial = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.observacion = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.disponible = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.estado = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -183,6 +185,7 @@
             this.Producto,
             this.idmodelo,
             this.Modelo,
+            this.Serial,
             this.observacion,
             this.disponible,
             this.estado});
@@ -193,67 +196,11 @@
             this.grDetalle.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.grDetalle.Size = new System.Drawing.Size(629, 220);
             this.grDetalle.TabIndex = 0;
-            // 
-            // codigo
-            // 
-            this.codigo.DataPropertyName = "codigo";
-            this.codigo.HeaderText = "codigo";
-            this.codigo.Name = "codigo";
-            this.codigo.ReadOnly = true;
-            // 
-            // idproducto
-            // 
-            this.idproducto.DataPropertyName = "idproducto";
-            this.idproducto.HeaderText = "idproducto";
-            this.idproducto.Name = "idproducto";
-            this.idproducto.ReadOnly = true;
-            // 
-            // Producto
-            // 
-            this.Producto.DataPropertyName = "Producto";
-            this.Producto.HeaderText = "Producto";
-            this.Producto.Name = "Producto";
-            this.Producto.ReadOnly = true;
-            // 
-            // idmodelo
-            // 
-            this.idmodelo.DataPropertyName = "idmodelo";
-            this.idmodelo.HeaderText = "idmodelo";
-            this.idmodelo.Name = "idmodelo";
-            this.idmodelo.ReadOnly = true;
-            // 
-            // Modelo
-            // 
-            this.Modelo.DataPropertyName = "Modelo";
-            this.Modelo.HeaderText = "Modelo";
-            this.Modelo.Name = "Modelo";
-            this.Modelo.ReadOnly = true;
-            // 
-            // observacion
-            // 
-            this.observacion.DataPropertyName = "observacion";
-            this.observacion.HeaderText = "Observacion";
-            this.observacion.Name = "observacion";
-            this.observacion.ReadOnly = true;
-            // 
-            // disponible
-            // 
-            this.disponible.DataPropertyName = "disponible";
-            this.disponible.HeaderText = "Disponible";
-            this.disponible.Name = "disponible";
-            this.disponible.ReadOnly = true;
-            // 
-            // estado
-            // 
-            this.estado.DataPropertyName = "estado";
-            this.estado.HeaderText = "estado";
-            this.estado.Name = "estado";
-            this.estado.ReadOnly = true;
+            this.grDetalle.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.grDetalle_CellDoubleClick);
             // 
             // panel3
             // 
             this.panel3.Controls.Add(this.cmdGrabar);
-            this.panel3.Controls.Add(this.userGrilla);
             this.panel3.Controls.Add(this.groupBox1);
             this.panel3.Controls.Add(this.label5);
             this.panel3.Controls.Add(this.txtObservacionCabecera);
@@ -264,6 +211,7 @@
             this.panel3.Controls.Add(this.label3);
             this.panel3.Controls.Add(this.lblNew);
             this.panel3.Controls.Add(this.label2);
+            this.panel3.Controls.Add(this.userGrilla);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel3.Font = new System.Drawing.Font("Garamond", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.panel3.Location = new System.Drawing.Point(3, 254);
@@ -286,6 +234,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.lblIDDet);
             this.groupBox1.Controls.Add(this.pnlD);
             this.groupBox1.Controls.Add(this.pnlA);
             this.groupBox1.Controls.Add(this.cmdNuevo);
@@ -573,11 +522,20 @@
             this.pnlD.Size = new System.Drawing.Size(190, 74);
             this.pnlD.TabIndex = 28;
             // 
+            // lblIDDet
+            // 
+            this.lblIDDet.AutoSize = true;
+            this.lblIDDet.Location = new System.Drawing.Point(580, 109);
+            this.lblIDDet.Name = "lblIDDet";
+            this.lblIDDet.Size = new System.Drawing.Size(51, 18);
+            this.lblIDDet.TabIndex = 29;
+            this.lblIDDet.Text = "lblDet";
+            // 
             // userGrilla
             // 
             this.userGrilla.Font = new System.Drawing.Font("Garamond", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.userGrilla.FormName = null;
-            this.userGrilla.Location = new System.Drawing.Point(189, 47);
+            this.userGrilla.Location = new System.Drawing.Point(241, 89);
             this.userGrilla.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.userGrilla.Name = "userGrilla";
             this.userGrilla.NombreCampo = null;
@@ -589,6 +547,72 @@
             this.userGrilla.ValorSeleccionado = null;
             this.userGrilla.Visible = false;
             this.userGrilla.VisibleChanged += new System.EventHandler(this.userGrilla_VisibleChanged);
+            // 
+            // codigo
+            // 
+            this.codigo.DataPropertyName = "codigo";
+            this.codigo.HeaderText = "codigo";
+            this.codigo.Name = "codigo";
+            this.codigo.ReadOnly = true;
+            this.codigo.Visible = false;
+            // 
+            // idproducto
+            // 
+            this.idproducto.DataPropertyName = "idproducto";
+            this.idproducto.HeaderText = "idproducto";
+            this.idproducto.Name = "idproducto";
+            this.idproducto.ReadOnly = true;
+            this.idproducto.Visible = false;
+            // 
+            // Producto
+            // 
+            this.Producto.DataPropertyName = "Producto";
+            this.Producto.HeaderText = "Producto";
+            this.Producto.Name = "Producto";
+            this.Producto.ReadOnly = true;
+            // 
+            // idmodelo
+            // 
+            this.idmodelo.DataPropertyName = "idmodelo";
+            this.idmodelo.HeaderText = "idmodelo";
+            this.idmodelo.Name = "idmodelo";
+            this.idmodelo.ReadOnly = true;
+            this.idmodelo.Visible = false;
+            // 
+            // Modelo
+            // 
+            this.Modelo.DataPropertyName = "Modelo";
+            this.Modelo.HeaderText = "Modelo";
+            this.Modelo.Name = "Modelo";
+            this.Modelo.ReadOnly = true;
+            // 
+            // Serial
+            // 
+            this.Serial.DataPropertyName = "Serial";
+            this.Serial.HeaderText = "Serial";
+            this.Serial.Name = "Serial";
+            this.Serial.ReadOnly = true;
+            // 
+            // observacion
+            // 
+            this.observacion.DataPropertyName = "observacion";
+            this.observacion.HeaderText = "Observacion";
+            this.observacion.Name = "observacion";
+            this.observacion.ReadOnly = true;
+            // 
+            // disponible
+            // 
+            this.disponible.DataPropertyName = "disponible";
+            this.disponible.HeaderText = "Disponible";
+            this.disponible.Name = "disponible";
+            this.disponible.ReadOnly = true;
+            // 
+            // estado
+            // 
+            this.estado.DataPropertyName = "estado";
+            this.estado.HeaderText = "estado";
+            this.estado.Name = "estado";
+            this.estado.ReadOnly = true;
             // 
             // frmIngresosProductos
             // 
@@ -658,16 +682,18 @@
         private System.Windows.Forms.Button cmdProd;
         private usercontrol.userControlGrilla userGrilla;
         private System.Windows.Forms.Button cmdNuevo;
+        private System.Windows.Forms.Label lblImpoNombre;
+        private System.Windows.Forms.Panel pnlA;
+        private System.Windows.Forms.Panel pnlD;
+        private System.Windows.Forms.Label lblIDDet;
         private System.Windows.Forms.DataGridViewTextBoxColumn codigo;
         private System.Windows.Forms.DataGridViewTextBoxColumn idproducto;
         private System.Windows.Forms.DataGridViewTextBoxColumn Producto;
         private System.Windows.Forms.DataGridViewTextBoxColumn idmodelo;
         private System.Windows.Forms.DataGridViewTextBoxColumn Modelo;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Serial;
         private System.Windows.Forms.DataGridViewTextBoxColumn observacion;
         private System.Windows.Forms.DataGridViewTextBoxColumn disponible;
         private System.Windows.Forms.DataGridViewTextBoxColumn estado;
-        private System.Windows.Forms.Label lblImpoNombre;
-        private System.Windows.Forms.Panel pnlA;
-        private System.Windows.Forms.Panel pnlD;
     }
 }
