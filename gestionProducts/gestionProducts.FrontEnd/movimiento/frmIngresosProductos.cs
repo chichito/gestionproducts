@@ -144,28 +144,30 @@ namespace gestionProducts.FrontEnd.movimiento
             lblProducto.Text = "";
             txtIDMod.Text = "";
             lblModelo.Text = "";
+            txtSerial.Text = "";
+            txtObservacionDetalle.Text = "";
             pnlA.Enabled = true;
         }
 
         private void cmdAgregar_Click(object sender, EventArgs e)
         {
-            if (txtIDProd.Text.Trim() == "")
+            if (txtIDProd.Text.Trim() == "" && lblProducto.Text.Trim() == "")
             {
                 MessageBox.Show("Debe seleccionar un producto.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (txtIDMod.Text.Trim() == "")
+            if (txtIDMod.Text.Trim() == "" && lblModelo.Text.Trim() == "")
             {
                 MessageBox.Show("Debe seleccionar un modelo.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (dtDetalle.AsEnumerable().Any(r => r.Field<int>("idproducto") == int.Parse(txtIDProd.Text) && r.Field<int>("idmodelo") == int.Parse(txtIDMod.Text)))
-            {
-                MessageBox.Show("This product and model combination already exists.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
             if (lblIDDet.Text == "NEW")
             {
+                if (dtDetalle.AsEnumerable().Any(r => r.Field<int>("idproducto") == int.Parse(txtIDProd.Text) && r.Field<int>("idmodelo") == int.Parse(txtIDMod.Text)))
+                {
+                    MessageBox.Show("This product and model combination already exists.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
                 DataRow row = dtDetalle.NewRow();
                 row["codigo"] = dtDetalle.Rows.Count + 1; // Assuming auto-increment
                 row["idproducto"] = txtIDProd.Text.Trim();
@@ -236,6 +238,11 @@ namespace gestionProducts.FrontEnd.movimiento
                 dtDetalle = CrearDetalleProductos(null);
             }
             grDetalle.DataSource = dtDetalle;
+            cmdNuevo_Click(null, null);
+            pnlGrdProd.Enabled = true;
+            pnlD.BackColor = System.Drawing.Color.LightGreen;
+            lblMensaje.Text = "Este producto está disponible.";
+            cmdGrabar.Visible = true;
         }
 
         private DataTable CrearDetalleProductos(DataTable dtT)
@@ -261,48 +268,56 @@ namespace gestionProducts.FrontEnd.movimiento
         private void cmdGrabar_Click(object sender, EventArgs e)
         {
             string sError = "";
-            string sSQL = $"INSERT INTO ingresosproductoscabecera (idimportacion, idusuario, observacion) " +
-                            $"VALUES ({lblImportacion.Text},{clsVariables.ObjU.SIdUsuario},'{txtObservacionCabecera.Text}')";
+            string sSQL = "";
+            if (dtDetalle.Rows.Count == 0)
+            {
+                MessageBox.Show("Debe agregar al menos un producto.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if (lblNew.Text == "NEW")
+                sSQL = $"INSERT INTO ingresosproductoscabecera (idimportacion, idusuario, observacion) " +
+                                $"VALUES ({lblImportacion.Text},{clsVariables.ObjU.SIdUsuario},'{txtObservacionCabecera.Text}')";
+            else
+                sSQL = $"UPDATE ingresosproductoscabecera SET idimportacion={lblImportacion.Text}, " +
+                       $"idusuario={clsVariables.ObjU.SIdUsuario}, observacion='{txtObservacionCabecera.Text}' " +
+                       $"WHERE codigo={lblNew.Text}";
             if (clsVariables.ObjBD.Ejecutar(sSQL, null, out sError))
             {
-                sSQL = $"SELECT MAX(codigo) FROM ingresosproductoscabecera";
-                DataSet ds = clsVariables.ObjBD.cargarSQL(sSQL, null, out sError);
-                if (sError != "")
+                if (lblNew.Text == "NEW")
                 {
-                    MessageBox.Show(sError, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-                if (ds.Tables[0].Rows.Count > 0)
-                {
-                    lblNew.Text = ds.Tables[0].Rows[0][0].ToString();
-                    foreach (DataRow row in dtDetalle.Rows)
+                    lblNew.Text = clsVariables.ObjBD.ObtenerUltimoCodigo("ingresosproductoscabecera", "codigodd", out sError).ToString();
+                    if (sError != "")
                     {
-                        if (row["estado"] == null || row["estado"].ToString() == "N")
-                            sSQL = $"INSERT INTO ingresosproductosdetalle (codigocabecera, idproducto, idmodelo, serial, observacion, disponible) " +
-                                   $"VALUES ({lblNew.Text}, {row["idproducto"]}, {row["idmodelo"]}, '{row["serial"]}', '{row["observacion"]}', {Convert.ToInt32(row["disponible"])})";
-                        if (row["estado"] == null || row["estado"].ToString() == "A")
-                            sSQL = " UPDATE ingresosproductosdetalle " +
-                                   $"SET serial = '{row["serial"]}', observacion = '{row["observacion"]}' " +
-                                   $"WHERE codigocabecera = {lblNew.Text} AND idproducto = {row["idproducto"]} AND idmodelo = {row["idmodelo"]}";
-                        if (!clsVariables.ObjBD.grabarSQL(sSQL, out sError))
-                        {
-                            MessageBox.Show(sError, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
+                        MessageBox.Show(sError, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
                     }
-                    MessageBox.Show("Datos grabados correctamente.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    cargarDatos();
                 }
-                else
+                foreach (DataRow row in dtDetalle.Rows)
                 {
-                    MessageBox.Show("No se pudo obtener el código de la cabecera.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (row["estado"] == null || row["estado"].ToString() == "N")
+                        sSQL = $"INSERT INTO ingresosproductosdetalle (codigocabecera, idproducto, idmodelo, serial, observacion, disponible) " +
+                               $"VALUES ({lblNew.Text}, {row["idproducto"]}, {row["idmodelo"]}, '{row["serial"]}', '{row["observacion"]}', {Convert.ToInt32(row["disponible"])})";
+                    if (row["estado"] == null || row["estado"].ToString() == "A")
+                        sSQL = " UPDATE ingresosproductosdetalle " +
+                               $"SET serial = '{row["serial"]}', observacion = '{row["observacion"]}' " +
+                               $"WHERE codigocabecera = {lblNew.Text} AND idproducto = {row["idproducto"]} AND idmodelo = {row["idmodelo"]}";
+                    if (!clsVariables.ObjBD.grabarSQL(sSQL, out sError))
+                    {
+                        MessageBox.Show(sError, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
                 }
+                MessageBox.Show("Datos grabados correctamente.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                cargarDatos();
+            }
+            else
+            {
+                MessageBox.Show("No se pudo obtener el código de la cabecera.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void grDetalle_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            pnlA.Enabled = false;
             if (e.RowIndex >= 0 && e.RowIndex < grDetalle.Rows.Count)
             {
                 DataGridViewRow row = grDetalle.Rows[e.RowIndex];
@@ -313,6 +328,35 @@ namespace gestionProducts.FrontEnd.movimiento
                 lblModelo.Text = row.Cells["Modelo"].Value.ToString();
                 txtSerial.Text = row.Cells["Serial"].Value.ToString();
                 txtObservacionDetalle.Text = row.Cells["observacion"].Value.ToString();
+                pnlA.Enabled = false;
+                if (Convert.ToBoolean(row.Cells["disponible"].Value.ToString()) == false)
+                {
+                    pnlGrdProd.Enabled = false;
+                    pnlD.BackColor = System.Drawing.Color.LightCoral;
+                    lblMensaje.Text = "Este producto no está disponible.";
+                    cmdGrabar.Visible = false;
+                }
+                else
+                {
+                    pnlGrdProd.Enabled = true;
+                    pnlD.BackColor = System.Drawing.Color.LightGreen;
+                    lblMensaje.Text = "Este producto está disponible.";
+                    cmdGrabar.Visible = true;
+                }
+            }
+        }
+
+        private void grDetalle_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (Convert.ToBoolean(this.grDetalle.Rows[e.RowIndex].Cells["disponible"].Value.ToString()))
+            {
+                this.grDetalle.Rows[e.RowIndex].DefaultCellStyle.BackColor = System.Drawing.Color.LightGreen;
+                this.grDetalle.Rows[e.RowIndex].DefaultCellStyle.ForeColor = System.Drawing.Color.Black;
+            }
+            else
+            {
+                this.grDetalle.Rows[e.RowIndex].DefaultCellStyle.BackColor = System.Drawing.Color.LightCoral;
+                this.grDetalle.Rows[e.RowIndex].DefaultCellStyle.ForeColor = System.Drawing.Color.White;
             }
         }
     }

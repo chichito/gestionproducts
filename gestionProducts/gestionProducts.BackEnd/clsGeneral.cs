@@ -30,6 +30,19 @@ namespace gestionProducts.BackEnd
             return GrabarActualizarEliminar(comando, out sError);
         }
 
+        public int ObtenerUltimoCodigo(string nombreTabla, string nombreColumna, out string sError)
+        {
+            string sSQL = $"SELECT MAX({nombreColumna}) FROM {nombreTabla}";
+            DataSet ds = cargarSQL(sSQL, null, out sError);
+            if (!string.IsNullOrEmpty(sError))
+                return -1;
+
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && ds.Tables[0].Rows[0][0] != DBNull.Value)
+                return Convert.ToInt32(ds.Tables[0].Rows[0][0]);
+            else
+                return 0;
+        }
+
         public DataSet cargarSQL(string sSQL, Dictionary<string, object> parametros, out string sError)
         {
             try
