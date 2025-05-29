@@ -290,7 +290,7 @@ namespace gestionProducts.FrontEnd.movimiento
             {
                 if (lblNew.Text == "NEW")
                 {
-                    lblNew.Text = clsVariables.ObjBD.ObtenerUltimoCodigo("ingresosproductoscabecera", "codigodd", out sError).ToString();
+                    lblNew.Text = clsVariables.ObjBD.ObtenerUltimoCodigo("ingresosproductoscabecera", "codigo", out sError).ToString();
                     if (sError != "")
                     {
                         MessageBox.Show(sError, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
